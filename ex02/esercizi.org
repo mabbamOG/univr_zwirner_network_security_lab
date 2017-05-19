@@ -1,0 +1,120 @@
+# ascii art generated with http://asciiflow.com/
+* esercitazione 02
+** es 1.a
+bisogna impedire che le altre sottoreti
+possano connettersi al nostro firewall
+(tramite ssh. a lezione abbiamo pero' bloccato tutto)
+#+BEGIN_SRC ditaa
+                                       +--------+
+                                       |        |
+                               +-----------------------+ ATTACKER
+                               |       |        |
+                               |       |        |
+ +---------+               172.x.x.x   +--------+
+ | firewall|                   |
+ |         |                   |
+ |         <----XXXXXXXXX------+
+ |         |                   |
+ +-----^---+                   |
+       |                +----------+
+       |                |      |   |
+192.168.n.0/24          |      |   |
+                        |      |   |
+                        |      |   |
+                        |      |   |
+                        +----------+
+                               |
+                          ATTACKER
+                               +
+#+END_SRC
+
+** es 1.b
+bisogna permettere che il traffico possa
+attraversare il firewall.
+ma noon vogliamo che qualcuno utilizzi
+il nostro firewall per fare forwarding
+(come gateway) a target di altri attacchi!
+#+BEGIN_SRC
+    |
++-----------+
+|   |       |
+|   |       |
+|   |       |
+|   |       |        +----------+
++-----------+        | ATTACKER |
+    |         +----------+ +-----------+
+    |     ^   |      | (or in   |
+    |     |   |      | subnet)  |
+    |     |   |      +----------+
+    |     |   |
+    |     |   |
+172.x.x.x |   |
+    |     |   |
+    |     X   |
+    |     X   |
+    |     X   |
+    |   ^ X   |        +-------------+
+    |   | XXXXXXXXX--> | e.g. TARGET |
+    |   | X   |        |             |
+    |   | X   |        |             |
++---------X-+ |        |             |
+|   |   | XXXXX        +-------------+
+|   |   |   |
+|   |   |   |
+|firewall   |
++---+---+---+
+    |   |
+    v   +
+192.168.n.0/24
+#+END_SRC
+** es2
+a simple way to prevent arp poisoning
+would be to detect a trivial mitm w/ stupid forwarding.
+this does not prevent/detect the attack, but it is a mitigation
+for an ongoing one.
+#+BEGIN_SRC
+                              +--------------+            +-------+
+                              |              |  172.x.x.x |       |
+                      +-----> |  FIREWALL    |  <-----XXXXXXXXX   |
+                      |       |              |            |   X   |
+                      |       +--------------+            +---X---+
+                      |                                       X
+                      |                                       |
+                      +                                       +
+
++---------------------------------------+   +---------------------------------------+
+|              |GOOD PACKET|            |   |              |BAD PACKET|             |
++---------+---------------+-------------+   +---------+-----------------------------+
+|  |SRC|  |  TARGET MAC   | TARGET IP   |   |  |SRC|  |  ATTACKER MAC | TARGET IP   |
++---------------------------------------+   +---------------------------------------+
+|  |DST|  |  FIREWALL MAC | FIREWALL IP |   |  |DST|  |  FIREWALL MAC | FIREWALL IP |
++---------+---------------+-------------+   +---------+---------------+-------------+
+
+                   TARGET                                  ATTACKER
+                (192.168.n.1)
+                                                               ^
+                      +           BROADCAST CONNECTION         |
+                      |           (e.g. WiFi or Ethernet)      |
+                      +---------XXXXXXXXXXXXXXXXXXXXXXXX-------+
+
+
+                       +--------------------------------------------+
+                       |                 |BAD PACKET|               |
+                       +------------+-------------------------------+
+                       |   |SRC|    |  TARGET MAC   |   TARGET IP   |
+                       +--------------------------------------------+
+                       |   |DST|    |  ATACKER MAC  |  FIREWALL IP  |
+                       +------------+---------------+---------------+
+#+END_SRC
+*** The attacker is expected to:
+1. arp-message target (broadcast?), which is nearby but on another subnet.
+   his ip is the same as target's firewall, but the mac is his own
+2. receive all of target's packets (these packets no longer traverse the 2
+   subnets, as they are sent over-the-air directly at Layer2)
+3. forward target's packets to target's original firewall
+   (only transport addresses are modified. look at ditaa graph above)
+*** The defense:
+1. check if the L2 src addr is the same as expected src ip host's
+   mac address (it is known since it belongs to the subnet)
+
+- NOTE! :: if the attacker spoofs his own mac address, then this mitigation is insufficient

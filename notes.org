@@ -1,0 +1,2 @@
+* connettersi al tuo box: ssh utente@bbox13 con pass=password
+* target is (admin,admin123)
