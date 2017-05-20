@@ -28,7 +28,6 @@ possano connettersi al nostro firewall
                                +
 #+END_SRC
 
-#+RESULTS:
 [[file:1a.png]]
 
 ** es 1.b
@@ -71,7 +70,6 @@ il nostro firewall per fare forwarding
 192.168.n.0/24
 #+END_SRC
 
-#+RESULTS:
 [[file:1b.png]]
 
 ** es2
@@ -114,7 +112,6 @@ for an ongoing one.
                        +------------+---------------+---------------+
 #+END_SRC
 
-#+RESULTS:
 [[file:2.png]]
 
 *** The attacker is expected to:
