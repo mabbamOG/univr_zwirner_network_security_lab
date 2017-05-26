@@ -1,10 +1,40 @@
-* bisogna creare un ids
+* 01 - bisogna creare un ids
 - richiesta gestione da "altri" (e' tentativo accesso diretto al firewall)
 - richiesta di transito da "altri" (e' tentativo forward tramite il firewall)
 - richiesta gestione da "altri" con ip camuffati ma interfacia sbagliata
 - tentativi di uscita dalla mia rete ambigui/non previsti
-* bisogna gestire gli allarmi
+* 02 - bisogna gestire gli allarmi
 - nota :: non devono essere troppi, senno diventano poco rilevanti. devono
   suonare nel momento giusto e a intervalli giusti
 - es :: x gli bad output, filtro tutti gli ip dst e li uniqo, e faccio
   suonare 1 allarme x ogni NUOVO ip!!!
+* extra fine corso - identificazione scan delle porte
+bisogna trovare gli utenti che stanno facendo portscan nel nostro router (o
+nella nostra rete anche?).
+- nota :: importante anche notare i lassi di tempo!
+- nota :: considera che un portscan non e' degno di allarme. bisogna
+  correlare. e se ci fossero tanti ip che fanno una porta alla volta? e se lo
+  scan e' separato da 1 settimana?
+  - piu ip -> conta a prescindere dall ip
+  - piu tempo -> log lunghi?
+- nota :: se lutente e' dentro? drop 1 utente? drop subnet (se piu utenti)?
+  se lutente e' fuori ma io li faccio passare di solito? -> 
+    - importanza area geografica, 
+    - considera importanza asset interni, 
+    - considera sorgente dubbia (ToR) -> blocco temporaneo, richiesta captcha
+* 5a. extra fine corso - mitigazione syn flood (dos: "half-open attack")
+lattacco satura le risorse sul server. lattaccante chiede tante connessioni
+ma non le usa, e se si chiudono continua.
+il server e' magari target o bbox.
+** soluzione tipica
+di solito np, quando il carico pero del server arriva a 70% si attiva un
+bilanciatore che comincia a troncare
+- NOTA :: la mitigazione x le scan delle porte puo' funzionare in maniera
+  simile, volendo
+** mitigazione
+- limite alle connessioni
+* 5b. gestione syn flood - rilevazione ip malevoli
+bisogna operare sul syn flood in maniera piu mirata. bloccare gli ip
+malevoli!
+- NOTA :: quando applichi blacklist tieni conto della whitelist che protegge
+  gli admin del tuo cliente. la whitelist avra' precedenza sulla blacklist.

@@ -4,3 +4,21 @@
 ** possible attack: rat? (inside job)
 * ids OSSEC lavora a livello disistema e analisi log
 * hypervisor PROXMOX
+* pdfsense
+e' firewall bsd
+- piu' evoluto?
+- filtraggio su banda?
+- performance rispetto ad iptables piu basse?
+* migliori pratiche firewall
+** documentare il tuo firewall e' importante!!
+** drop come policy
+** meno regole = piu prestazione!
+considera che ci saranno un casino di regole automatiche (>60%) e il totale
+sara' sullordine delle migliaia!
+** considera le micro-connessioni del web, analizza il traffico e ottimizza
+quando un browser visita una pagina apre tante connessioni quando visita una
+pagina
+** controlli periodici: traffico e regole(!)
+** fai backup pianificati e versionati delle regole :) gg
+** testing: incident response (eh gia), firewall buggati
+- gli aggiornamenti creano disservizio, a meno che di un cluster
