@@ -27,7 +27,6 @@ possano connettersi al nostro firewall
                           ATTACKER
                                +
 #+END_SRC
-
 [[file:1a.png]]
 
 ** es 1.b
@@ -69,7 +68,6 @@ il nostro firewall per fare forwarding
     v   +
 192.168.n.0/24
 #+END_SRC
-
 [[file:1b.png]]
 
 ** es2
@@ -111,7 +109,6 @@ for an ongoing one.
                        |   |DST|    |  ATACKER MAC  |  FIREWALL IP  |
                        +------------+---------------+---------------+
 #+END_SRC
-
 [[file:2.png]]
 
 *** The attacker is expected to:
@@ -126,3 +123,36 @@ for an ongoing one.
    mac address (it is known since it belongs to the subnet)
 
 - NOTE! :: if the attacker spoofs his own mac address, then this mitigation is insufficient
+
+** es 3
+ritorniamo all'esercizio 1.a, abbiamo PERMESSO accesso diretto al nostro
+firewall SOLO ai nostri host conosciuti.
+MA se la policy e' `INPUT -P DROP`, `OUTPUT -P DROP`
+allora bisogna permettere anche al firewall di rispondere al traffico che arriva in
+input diretto. bisogna identificare univocamente la connessione con host.
+
+#+BEGIN_SRC ditaa
+                +-----------+       172.x.x.x
+                |FIREWALL   |
+                |           <---XXXXX--->
+                |           |
+                +----^---+--+ <--XXXXX
+                     |   |           |
+(init/reply after init)  |(reply)  (reply wihout init
+                     |   |         not really primary
+                     +   v         issue)
+               192.168.n.0/24  +-----+
+
+#+END_SRC
+[[file:3.png]]
+
+- NOTA :: aggiungere 2 regole --state NEW/ESTABLISHED in INPUT permette di
+  modularizzare il firewall e separare semanticamente cosa accetto per la
+  prima volta da cosa accetto una volta che e' partita la connessione!
+
+- NOTA :: accettare anche gli stati con connessione related permette di
+  adattarsi a protocolli che usano magari piu' connessioni in maniera non
+  cosi' scontata ed evidenziata delle nostre banali regole
+  (da accettare solo in OUPUT o anche INPUT? sicuramente avere RELATED solo
+  in OUTPUT e' piu' restrittivo e copre casi un po' piu' comuni per es.
+  risposte ICMP o cose varie che cmq vengono dal server)
