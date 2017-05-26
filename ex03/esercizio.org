@@ -1,0 +1,10 @@
+* bisogna creare un ids
+- richiesta gestione da "altri" (e' tentativo accesso diretto al firewall)
+- richiesta di transito da "altri" (e' tentativo forward tramite il firewall)
+- richiesta gestione da "altri" con ip camuffati ma interfacia sbagliata
+- tentativi di uscita dalla mia rete ambigui/non previsti
+* bisogna gestire gli allarmi
+- nota :: non devono essere troppi, senno diventano poco rilevanti. devono
+  suonare nel momento giusto e a intervalli giusti
+- es :: x gli bad output, filtro tutti gli ip dst e li uniqo, e faccio
+  suonare 1 allarme x ogni NUOVO ip!!!

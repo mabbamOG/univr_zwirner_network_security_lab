@@ -23,3 +23,10 @@ iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -s 192.168.13.0/24 -m state --state NEW -j ACCEPT
 iptables -A FORWARD -d 192.168.13.0/24 -m state --state NEW -j ACCEPT # siamo sicuri di volerlo? potremmo voler fare nat
 iptables -P FORWARD DROP
+
+# log
+iptables -A INPUT -j LOG --log-prefix 'BAD INPUT LOG'
+iptables -A -i eth1 -s 192.168.13.0/24 -j LOG --log-prefix 'FORGERY FORWARD LOG' # -A???
+iptables -A -i eth1 -s 192.168.13.0/24 -j DROP
+iptables -A FORWARD -j LOG --log-prefix 'BAD FORWARD LOG'
+iptables -A OUTPUT -j LOG --log-prefix 'BAD OUTPUT LOG'
